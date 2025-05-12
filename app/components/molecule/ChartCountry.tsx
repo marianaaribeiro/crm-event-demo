@@ -1,0 +1,124 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import {
+  PieChart,
+  Pie,
+  Sector,
+  Cell,
+  ResponsiveContainer,
+} from "recharts";
+import { baseURL } from "../../util/urls";
+
+export default function ChartCountry({ refreshKey }) {
+  const [data, setData] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    async function fetchData() {
+      const salgadosRes = await fetch(`/api/salgados`);
+      const docesRes = await fetch(`/api/doces`);
+
+      const salgados = await salgadosRes.json();
+      const doces = await docesRes.json();
+
+      const registros = [...salgados, ...doces];
+
+      const contador: Record<string, number> = {};
+      registros.forEach((item: any) => {
+        const pais = item.origem || "Desconhecido";
+        contador[pais] = (contador[pais] || 0) + 1;
+      });
+
+      const chartData = Object.entries(contador).map(([pais, total], index) => ({
+        name: `${pais}`,
+        value: total,
+      }));
+
+      setData(chartData);
+    }
+
+    fetchData();
+  }, [refreshKey]);
+
+  const COLORS = [
+    "#FBBF24", "#10B981", "#EC4899", "#3B82F6",
+    "#6366F1", "#F97316", "#A855F7", "#14B8A6",
+    "#F43F5E", "#84CC16", "#E879F9", "#0EA5E9"
+  ];
+
+  const renderActiveShape = (props: any) => {
+    const RADIAN = Math.PI / 180;
+    const {
+      cx, cy, midAngle, innerRadius, outerRadius,
+      startAngle, endAngle, fill, payload, value,
+    } = props;
+
+    const sin = Math.sin(-RADIAN * midAngle);
+    const cos = Math.cos(-RADIAN * midAngle);
+    const sx = cx + (outerRadius + 10) * cos;
+    const sy = cy + (outerRadius + 10) * sin;
+    const mx = cx + (outerRadius + 30) * cos;
+    const my = cy + (outerRadius + 30) * sin;
+    const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+    const ey = my;
+    const textAnchor = cos >= 0 ? "start" : "end";
+
+    return (
+      <g>
+        {payload.name.split(" ").map((word: string, idx: number) => (
+          <text
+            key={idx}
+            x={cx}
+            y={cy + idx * 16 - 8}
+            textAnchor="middle"
+            fill={fill}
+            className="font-bold text-sm"
+          >
+            {word}
+          </text>
+        ))}
+
+        <Sector {...{ cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill }} />
+        <Sector
+          cx={cx}
+          cy={cy}
+          innerRadius={outerRadius + 6}
+          outerRadius={outerRadius + 10}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          fill={fill}
+        />
+        <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+        <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#fff">
+          {value}
+        </text>
+      </g>
+    );
+  };
+
+  return (
+    <ResponsiveContainer width="100%" height={250}>
+      <PieChart>
+        <Pie
+          activeIndex={activeIndex}
+          activeShape={renderActiveShape}
+          data={data}
+          cx="50%"
+          cy="50%"
+          innerRadius={60}
+          outerRadius={80}
+          fill="#8884d8"
+          dataKey="value"
+          onMouseEnter={(_, index) => setActiveIndex(index)}
+        >
+          {data.map((_, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+      </PieChart>
+      {/* <p className="text-sm text-gray-500 text-center">Total de países</p> */}
+    </ResponsiveContainer>
+  );
+}

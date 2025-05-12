@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Salgado {
+  id         Int    @id @default(autoincrement())
+  nome       String
+  telefone   String
+  sala       String @default("")
+  origem     String
+  tipo       String @default("")
+  descricao  String
+  bebida     String
+  pessoas    Int
+  createdAt  DateTime @default(now())
+}
+
+model Doce {
+  id         Int    @id @default(autoincrement())
+  nome       String
+  telefone   String
+  sala       String @default("")
+  origem     String
+  descricao  String
+  bebida     String
+  pessoas    Int
+  createdAt  DateTime @default(now())
+}
+
+model Gasto {
+  id        Int     @id @default(autoincrement())
+  nome      String @default("")
+  sala      String @default("")
+  item      String
+  valor     Float
+  createdAt DateTime @default(now())
+}
+
+model Organizacao {
+  id         Int      @id @default(autoincrement())
+  nome       String @default("")
+  whatsapp   String
+  sala       String
+  descricao  String
+  quantidade Int
+  indeciso   Boolean
+  createdAt  DateTime @default(now())
+}
+
+model Decoracao {
+  id         Int      @id @default(autoincrement())
+  nome       String @default("")
+  whatsapp   String
+  sala       String
+  descricao  String
+  quantidade Int
+  indeciso   Boolean
+  createdAt  DateTime @default(now())
+}
+
