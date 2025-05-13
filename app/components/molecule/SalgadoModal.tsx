@@ -102,8 +102,17 @@ export default function SalgadoModal({ onClose, onSuccess, initialData }) {
             <textarea name="descricao" required className="w-full border px-2 py-1 rounded" defaultValue={initialData?.descricao || ""} />
           </label>
           <div className="flex justify-end mt-4 gap-2">
-            <button type="button" disabled={isLoading} onClick={onClose} className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Cancelar</button>
-            <button type="submit" disabled={isLoading} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Gravar</button>
+            <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Cancelar</button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`px-4 py-2 rounded text-white transition ${isLoading
+                ? "bg-blue-300 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600"
+                }`}
+            >
+              {isLoading ? "Salvando..." : "Gravar"}
+            </button>
           </div>
         </form>
       </>}

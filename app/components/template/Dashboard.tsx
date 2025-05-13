@@ -125,25 +125,25 @@ function Dashboard() {
                 contact="+351 96832-3375"
               />,
               <AvatarCard
-                name="Maria Almeida"
+                name="Mariana Ali"
                 imageUrl="./1.png"
                 subTitle="Organizadora da equipe:"
                 role=" Doces"
-                contact="+351 93261-2776"
+                contact="+351 96832-3375"
               />,
               <AvatarCard
-                name="Margarida Palma"
+                name="Mariana Ali"
                 imageUrl="./1.png"
                 subTitle="Organizadora da equipe:"
                 role=" Decoração"
-                contact="+351 91046-5707"
+                contact="+351 96832-3375"
               />,
               <AvatarCard
-                name="Jéssica Peixoto"
+                name="Mariana Ali"
                 imageUrl="./1.png"
                 subTitle="Organizadora da equipe:"
                 role="Organização"
-                contact="+351 91414-9996"
+                contact="+351 96832-3375"
               />
               ]} />
             </div>

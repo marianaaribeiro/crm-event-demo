@@ -27,6 +27,25 @@ export default function OrganizationModal({
 
   const [showConfetti, setShowConfetti] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [sugestoes, setSugestoes] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (form.indeciso) {
+      setIsLoading(true);
+      fetch("/api/sugestao-organizacao")
+        .then(res => res.json())
+        .then(data => {
+          setIsLoading(false);
+          const lista = data.sugestoes
+            .split("\n")
+            .map(item => item.replace(/^\d+\.\s*/, "").trim())
+            .filter(Boolean);
+          setSugestoes(lista);
+        }).finally(() => setIsLoading(false));
+    } else {
+      setSugestoes([]);
+    }
+  }, [form.indeciso]);
 
   // preenche o form se for edição
   useEffect(() => {
@@ -136,12 +155,33 @@ export default function OrganizationModal({
                       onChange={handleChange}
                       className="mr-2"
                     />
-                    Não decidi o item ainda, vou perguntar à organizadora <b>Jéssica Peixoto</b> qual item levar
+                    Não decidi o item ainda, vou perguntar à organizadora <b>Mariana Ali</b> qual item levar ou consultar a lista de sugestão gerada pela <b>IA</b>.
                   </label>
                 </>
               }
             />
-
+            {sugestoes.length > 0 && (
+              <div className="mt-4 bg-yellow-100 p-3 rounded text-sm">
+                <p className="font-semibold mb-2">Sugestões da IA:</p>
+                <ul className="list-disc ml-4 space-y-1">
+                  {sugestoes.map((item, i) => (
+                    <li
+                      key={i}
+                      onClick={() =>
+                        setForm((prev) => ({
+                          ...prev,
+                          descricao: item,
+                          indeciso: false,
+                        }))
+                      }
+                      className="cursor-pointer hover:text-blue-600 transition"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <label className="block">
               Descrição do item:
               <textarea
@@ -156,7 +196,6 @@ export default function OrganizationModal({
               <button
                 type="button"
                 onClick={onClose}
-                disabled={isLoading}
                 className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
               >
                 Cancelar
@@ -164,9 +203,12 @@ export default function OrganizationModal({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                className={`px-4 py-2 rounded text-white transition ${isLoading
+                  ? "bg-blue-300 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
+                  }`}
               >
-                Gravar
+                {isLoading ? "Salvando..." : "Gravar"}
               </button>
             </div>
           </form>

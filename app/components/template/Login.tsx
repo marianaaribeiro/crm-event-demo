@@ -16,6 +16,7 @@ export default function Login() {
         if (user === "admin" && pass === "eventoFamilia") {
             localStorage.setItem("auth", "true");
             router.push("/dashboard");
+            document.cookie = "auth=true; path=/";
         } else {
             setError("Usuário ou senha incorretos.");
         }

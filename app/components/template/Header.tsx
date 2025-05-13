@@ -7,6 +7,7 @@ export default function Header() {
 
     const handleLogout = () => {
         localStorage.removeItem("auth");
+        document.cookie = "auth=; path=/; max-age=0";
         router.push("/login");
     };
 
@@ -19,7 +20,7 @@ export default function Header() {
                     className="h-10 w-20 object-contain"
                 />
                 <h1 className="text-xl md:text-2xl font-bold text-gray-800">
-                    Sistema de organização de Eventos
+                    Sistema de Organização de Eventos com IA
                 </h1>
             </div>
             <button
